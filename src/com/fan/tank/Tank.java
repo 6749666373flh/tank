@@ -11,15 +11,52 @@ public class Tank {
     private Direction dir;
     private boolean bL, bU, bR, bD;
     private boolean moving = false;
+    private Group group;
 
-    public Tank(int x, int y, Direction direction) {
+    TankFrame tf;
+
+    public Tank(int x, int y, Direction direction, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = direction;
+        this.group = group;
+        this.tf = tf;
     }
 
     public void paint(Graphics g) {
-        g.fillRect(x, y, 30, 30);
+//        g.fillRect(x, y, 30, 30);
+        if (this.group == Group.GOOD) {
+            switch (dir) {
+                case L:
+                    g.drawImage(ResourceMgr.goodTankL, x, y, null);
+                    break;
+                case R:
+                    g.drawImage(ResourceMgr.goodTankR, x, y, null);
+                    break;
+                case U:
+                    g.drawImage(ResourceMgr.goodTankU, x, y, null);
+                    break;
+                case D:
+                    g.drawImage(ResourceMgr.goodTankD, x, y, null);
+                    break;
+            }
+        } else if (this.group == Group.BAD) {
+            switch (dir) {
+                case L:
+                    g.drawImage(ResourceMgr.badTankL, x, y, null);
+                    break;
+                case R:
+                    g.drawImage(ResourceMgr.badTankR, x, y, null);
+                    break;
+                case U:
+                    g.drawImage(ResourceMgr.badTankU, x, y, null);
+                    break;
+                case D:
+                    g.drawImage(ResourceMgr.badTankD, x, y, null);
+                    break;
+            }
+        }
+
         move();
     }
 
@@ -46,7 +83,7 @@ public class Tank {
 
         if (!bL && !bU && !bR && !bD)
             moving = false;
-        else{
+        else {
             moving = true;
             if (bL && !bU && !bR && !bD)
                 dir = Direction.L;
@@ -62,7 +99,7 @@ public class Tank {
     }
 
     private void move() {
-        if(!moving) return;
+        if (!moving) return;
         switch (dir) {
             case L:
                 x -= SPEED;
@@ -94,8 +131,15 @@ public class Tank {
             case KeyEvent.VK_DOWN:
                 bD = false;
                 break;
+            case KeyEvent.VK_CONTROL:
+                fire();
+                break;
         }
         setMainDir();
+    }
+
+    private void fire() {
+        tf.add(new Bullet(x, y, dir, group));
     }
 
 }

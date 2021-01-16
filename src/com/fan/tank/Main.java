@@ -9,7 +9,7 @@ public class Main {
 
         while (true) {
             try {
-                TimeUnit.MILLISECONDS.sleep(60);
+                TimeUnit.MILLISECONDS.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
