@@ -1,7 +1,8 @@
+package com.fan.tank;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class TankFrame extends Frame {
 
@@ -9,10 +10,10 @@ public class TankFrame extends Frame {
 
 
     public TankFrame(){
-        this.setTitle("Tank war");
+        this.setTitle("com.fan.tank.Tank war");
         this.setLocation(400,100);
         this.setSize(800,600);
-        myTank = new Tank(100,100,Direction.STOP);
+        myTank = new Tank(100,100,Direction.R);
 
         this.addKeyListener(new TankKeyListener());
     }

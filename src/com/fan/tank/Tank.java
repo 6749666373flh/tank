@@ -1,3 +1,5 @@
+package com.fan.tank;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -8,6 +10,7 @@ public class Tank {
     private int x, y;
     private Direction dir;
     private boolean bL, bU, bR, bD;
+    private boolean moving = false;
 
     public Tank(int x, int y, Direction direction) {
         this.x = x;
@@ -42,19 +45,24 @@ public class Tank {
     private void setMainDir() {
 
         if (!bL && !bU && !bR && !bD)
-            dir = Direction.STOP;
-        if (bL && !bU && !bR && !bD)
-            dir = Direction.L;
-        if (!bL && bU && !bR && !bD)
-            dir = Direction.U;
-        if (!bL && !bU && bR && !bD)
-            dir = Direction.R;
-        if (!bL && !bU && !bR && bD)
-            dir = Direction.D;
+            moving = false;
+        else{
+            moving = true;
+            if (bL && !bU && !bR && !bD)
+                dir = Direction.L;
+            if (!bL && bU && !bR && !bD)
+                dir = Direction.U;
+            if (!bL && !bU && bR && !bD)
+                dir = Direction.R;
+            if (!bL && !bU && !bR && bD)
+                dir = Direction.D;
+        }
+
 
     }
 
     private void move() {
+        if(!moving) return;
         switch (dir) {
             case L:
                 x -= SPEED;

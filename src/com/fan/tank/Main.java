@@ -1,4 +1,5 @@
-import java.awt.*;
+package com.fan.tank;
+
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
 
         while (true) {
             try {
-                TimeUnit.MILLISECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
