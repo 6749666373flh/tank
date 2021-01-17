@@ -1,12 +1,13 @@
 package com.fan.tank;
 
 
+import com.fan.tank.chainofresponsibility.Collider;
+import com.fan.tank.chainofresponsibility.ColliderChain;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 public class TankFrame extends Frame {
@@ -16,8 +17,12 @@ public class TankFrame extends Frame {
     public static final int GAME_WIDTH = 1200, GAME_HEIGHT = 800;
 
     private Player myTank;
+    private Wall wall;
 
+    private List<Collider> colliders;
     private List<AbstractGameObject> gameObjects;
+    private ColliderChain colliderChain;
+
 
     private TankFrame() {
         this.setTitle("Tank war");
@@ -32,43 +37,40 @@ public class TankFrame extends Frame {
 
     private void initGameObjects() {
         myTank = new Player(300, 100, Direction.R, Group.GOOD);
+        wall = new Wall(300, 400, 50, 200);
+        colliderChain = new ColliderChain();
 
         gameObjects = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            gameObjects.add(new Tank(100+50*i,200,Direction.D,Group.BAD));
+        int count = Integer.parseInt(PropertyMgr.get("initTankCount"));
+        for (int i = 0; i < count; i++) {
+            gameObjects.add(new Tank(100+5*i,200,Direction.D,Group.BAD));
         }
+        gameObjects.add(wall);
+        gameObjects.add(myTank);
     }
 
     @Override
     public void paint(Graphics g) {
         Color c = g.getColor();
         g.setColor(Color.WHITE);
-//        g.drawString("bullet:"+bullets.size(),10,50);
-//        g.drawString("enemys:"+enemys.size(),10,60);
         g.setColor(c);
 
-        myTank.paint(g);
         for (int i = 0; i < gameObjects.size(); i++) {
-            gameObjects.get(i).paint(g);
+            AbstractGameObject go1 = gameObjects.get(i);
+            for (int j = 0; j < gameObjects.size(); j++) {
+                AbstractGameObject go2 = gameObjects.get(j);
+//                if(!colliderChain.collide(go1,go2)) continue;
+                colliderChain.collide(go1, go2);
+                if(!go1.isLive()) break;
+                if(!go2.isLive()) continue;
+            }
+            if(!go1.isLive()) {
+                gameObjects.remove(i);
+                continue;
+            }
+            go1.paint(g);
         }
-//        for (int i = 0; i < enemys.size(); i++) {
-//            if (!enemys.get(i).isLive()) {
-//                enemys.remove(i);
-//            }else{
-//                enemys.get(i).paint(g);
-//            }
-//        }
-//
-//        for (int i = 0; i < bullets.size(); i++) {
-//            for(int j = 0; j < enemys.size(); j++){
-//                bullets.get(i).collidesWithTank(enemys.get(j));
-//            }
-//            if (!bullets.get(i).isLive()) {
-//                bullets.remove(i);
-//            } else {
-//                bullets.get(i).paint(g);
-//            }
-//        }
+
     }
 
     Image offSecreenImage = null;
@@ -88,9 +90,6 @@ public class TankFrame extends Frame {
         g.drawImage(offSecreenImage, 0, 0, null);
     }
 
-    //    public void add(Bullet bullet) {
-//        this.bullets.add(bullet);
-//    }
     public void add(AbstractGameObject go) {
         gameObjects.add(go);
     }

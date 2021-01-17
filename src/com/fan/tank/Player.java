@@ -9,20 +9,36 @@ public class Player extends AbstractGameObject{
 
     public static final int SPEED = 3;
 
-    private int x, y;
+    private int x, y,width,height;
+    private int oldX,oldY;
     private Direction dir;
     private boolean bL, bU, bR, bD;
     private boolean moving = false;
     private boolean live = true;
     private Group group;
     private FireStrategy fireStrategy;
+    private Rectangle rect;
+
 
     public Player(int x, int y, Direction direction, Group group) {
         this.x = x;
         this.y = y;
         this.dir = direction;
         this.group = group;
+        this.width = ResourceMgr.goodTankU.getWidth();
+        this.height = ResourceMgr.goodTankU.getHeight();
+        this.oldX = x;
+        this.oldY = y;
+        rect = new Rectangle(x, y, width, height);
         this.initFireStrategy();
+    }
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void setRect(Rectangle rect) {
+        this.rect = rect;
     }
 
     public boolean isLive() {
@@ -126,6 +142,8 @@ public class Player extends AbstractGameObject{
 
     private void move() {
         if (!moving) return;
+        oldX = x;
+        oldY = y;
         switch (dir) {
             case L:
                 x -= SPEED;
@@ -140,6 +158,9 @@ public class Player extends AbstractGameObject{
                 y += SPEED;
                 break;
         }
+        boundsCheck();
+        rect.x = x;
+        rect.y = y;
     }
 
     public void keyRealeased(KeyEvent e) {
@@ -177,6 +198,17 @@ public class Player extends AbstractGameObject{
         fireStrategy.fire(this);
     }
 
+    private void boundsCheck() {
+        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH-width || y > TankFrame.GAME_HEIGHT-height) {
+            back();
+        }
+
+    }
+
+    public void back() {
+        this.x = oldX;
+        this.y = oldY;
+    }
     public void die() {
         this.setLive(false);
     }

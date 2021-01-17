@@ -17,6 +17,8 @@ public class Tank extends AbstractGameObject{
     private Group group;
     private Random r = new Random();
     private int height,width;
+    private Rectangle rect;
+
 
     public Tank(int x, int y, Direction direction, Group group) {
         this.x = x;
@@ -25,6 +27,7 @@ public class Tank extends AbstractGameObject{
         this.group = group;
         this.height = ResourceMgr.badTankU.getHeight();
         this.width = ResourceMgr.badTankU.getWidth();
+        this.rect = new Rectangle(x, y, width, height);
     }
 
     public boolean isLive() {
@@ -59,6 +62,14 @@ public class Tank extends AbstractGameObject{
         this.group = group;
     }
 
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void setRect(Rectangle rect) {
+        this.rect = rect;
+    }
+
     public void paint(Graphics g) {
 //        g.fillRect(x, y, 30, 30);
         if(!this.live) return;
@@ -79,6 +90,7 @@ public class Tank extends AbstractGameObject{
         }
 
         move();
+
     }
 
 
@@ -106,6 +118,8 @@ public class Tank extends AbstractGameObject{
         if (r.nextInt(100) > 90) {
             fire();
         }
+        rect.x = x;
+        rect.y = y;
     }
 
     private void randomDir() {
@@ -118,6 +132,7 @@ public class Tank extends AbstractGameObject{
         int newX = x+ResourceMgr.goodTankU.getWidth()/2-ResourceMgr.bulletU.getWidth()/2;
         int newY = y+ResourceMgr.goodTankU.getHeight()/2-ResourceMgr.bulletU.getHeight()/2;
         TankFrame.INSTANCE.add(new Bullet(newX, newY, dir, group));
+//        System.out.println(new Bullet(newX, newY, dir, group));
     }
 
     private void boundsCheck() {
@@ -127,12 +142,13 @@ public class Tank extends AbstractGameObject{
 
     }
 
-    private void back() {
+    public void back() {
         this.x = oldX;
         this.y = oldY;
     }
 
     public void die() {
         this.setLive(false);
+        TankFrame.INSTANCE.add(new Explode(x,y));
     }
 }
