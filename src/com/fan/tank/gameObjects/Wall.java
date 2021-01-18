@@ -1,4 +1,4 @@
-package com.fan.tank;
+package com.fan.tank.gameObjects;
 
 import java.awt.*;
 

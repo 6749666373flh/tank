@@ -1,4 +1,6 @@
-package com.fan.tank;
+package com.fan.tank.gameObjects;
+
+import com.fan.tank.*;
 
 import java.awt.*;
 
@@ -35,8 +37,12 @@ public class Bullet extends AbstractGameObject {
         return group;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public int getW() {
+        return w;
+    }
+
+    public int getH() {
+        return h;
     }
 
     public void paint(Graphics g) {

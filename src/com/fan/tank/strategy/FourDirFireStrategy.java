@@ -1,6 +1,8 @@
 package com.fan.tank.strategy;
 
 import com.fan.tank.*;
+import com.fan.tank.gameObjects.Bullet;
+import com.fan.tank.gameObjects.Player;
 
 public class FourDirFireStrategy implements FireStrategy {
     @Override
@@ -11,7 +13,7 @@ public class FourDirFireStrategy implements FireStrategy {
         Direction[] dirs = Direction.values();
 
         for (Direction d : dirs) {
-            TankFrame.INSTANCE.add(new Bullet(bX, bY, d, p.getGroup()));
+            TankFrame.INSTANCE.getGm().add(new Bullet(bX, bY, d, p.getGroup()));
 //            System.out.println(new Bullet(bX, bY, d, p.getGroup()));
         }
 

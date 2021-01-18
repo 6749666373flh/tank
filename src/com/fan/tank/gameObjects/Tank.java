@@ -1,22 +1,26 @@
-package com.fan.tank;
+package com.fan.tank.gameObjects;
+
+import com.fan.tank.Direction;
+import com.fan.tank.Group;
+import com.fan.tank.ResourceMgr;
+import com.fan.tank.TankFrame;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.Random;
 
-public class Tank extends AbstractGameObject{
+public class Tank extends AbstractGameObject {
 
     public static final int SPEED = 3;
 
     private int x, y;
-    private int oldX,oldY;
+    private int oldX, oldY;
     private Direction dir;
     private boolean bL, bU, bR, bD;
     private boolean moving = true;
     private boolean live = true;
     private Group group;
     private Random r = new Random();
-    private int height,width;
+    private int height, width;
     private Rectangle rect;
 
 
@@ -72,7 +76,7 @@ public class Tank extends AbstractGameObject{
 
     public void paint(Graphics g) {
 //        g.fillRect(x, y, 30, 30);
-        if(!this.live) return;
+        if (!this.live) return;
 
         switch (dir) {
             case L:
@@ -129,14 +133,14 @@ public class Tank extends AbstractGameObject{
     }
 
     private void fire() {
-        int newX = x+ResourceMgr.goodTankU.getWidth()/2-ResourceMgr.bulletU.getWidth()/2;
-        int newY = y+ResourceMgr.goodTankU.getHeight()/2-ResourceMgr.bulletU.getHeight()/2;
-        TankFrame.INSTANCE.add(new Bullet(newX, newY, dir, group));
+        int newX = x + this.width / 2 - ResourceMgr.bulletU.getWidth() / 2;
+        int newY = y + this.height / 2 - ResourceMgr.bulletU.getHeight() / 2;
+        TankFrame.INSTANCE.getGm().add(new Bullet(newX, newY, dir, group));
 //        System.out.println(new Bullet(newX, newY, dir, group));
     }
 
     private void boundsCheck() {
-        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH-width || y > TankFrame.GAME_HEIGHT-height) {
+        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH - width || y > TankFrame.GAME_HEIGHT - height) {
             back();
         }
 
@@ -149,6 +153,6 @@ public class Tank extends AbstractGameObject{
 
     public void die() {
         this.setLive(false);
-        TankFrame.INSTANCE.add(new Explode(x,y));
+        TankFrame.INSTANCE.getGm().add(new Explode(x, y));
     }
 }

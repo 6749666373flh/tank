@@ -1,9 +1,7 @@
 package com.fan.tank.chainofresponsibility;
 
-import com.fan.tank.AbstractGameObject;
-import com.fan.tank.Bullet;
-import com.fan.tank.Player;
-import com.fan.tank.Tank;
+import com.fan.tank.gameObjects.AbstractGameObject;
+import com.fan.tank.gameObjects.Bullet;
 
 public class BulletBulletCollider implements Collider{
     @Override

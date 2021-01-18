@@ -1,14 +1,11 @@
 package com.fan.tank;
 
 
-import com.fan.tank.chainofresponsibility.Collider;
-import com.fan.tank.chainofresponsibility.ColliderChain;
-
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.*;
-import java.util.List;
+import java.io.*;
+
 
 public class TankFrame extends Frame {
 
@@ -16,13 +13,11 @@ public class TankFrame extends Frame {
 
     public static final int GAME_WIDTH = 1200, GAME_HEIGHT = 800;
 
-    private Player myTank;
-    private Wall wall;
+    private GameModel gm = new GameModel();
 
-    private List<Collider> colliders;
-    private List<AbstractGameObject> gameObjects;
-    private ColliderChain colliderChain;
-
+    public GameModel getGm() {
+        return gm;
+    }
 
     private TankFrame() {
         this.setTitle("Tank war");
@@ -31,46 +26,12 @@ public class TankFrame extends Frame {
 
         this.addKeyListener(new TankKeyListener());
 
-        initGameObjects();
-
     }
 
-    private void initGameObjects() {
-        myTank = new Player(300, 100, Direction.R, Group.GOOD);
-        wall = new Wall(300, 400, 50, 200);
-        colliderChain = new ColliderChain();
-
-        gameObjects = new ArrayList<>();
-        int count = Integer.parseInt(PropertyMgr.get("initTankCount"));
-        for (int i = 0; i < count; i++) {
-            gameObjects.add(new Tank(100+5*i,200,Direction.D,Group.BAD));
-        }
-        gameObjects.add(wall);
-        gameObjects.add(myTank);
-    }
 
     @Override
     public void paint(Graphics g) {
-        Color c = g.getColor();
-        g.setColor(Color.WHITE);
-        g.setColor(c);
-
-        for (int i = 0; i < gameObjects.size(); i++) {
-            AbstractGameObject go1 = gameObjects.get(i);
-            for (int j = 0; j < gameObjects.size(); j++) {
-                AbstractGameObject go2 = gameObjects.get(j);
-//                if(!colliderChain.collide(go1,go2)) continue;
-                colliderChain.collide(go1, go2);
-                if(!go1.isLive()) break;
-                if(!go2.isLive()) continue;
-            }
-            if(!go1.isLive()) {
-                gameObjects.remove(i);
-                continue;
-            }
-            go1.paint(g);
-        }
-
+        gm.paint(g);
     }
 
     Image offSecreenImage = null;
@@ -90,20 +51,63 @@ public class TankFrame extends Frame {
         g.drawImage(offSecreenImage, 0, 0, null);
     }
 
-    public void add(AbstractGameObject go) {
-        gameObjects.add(go);
-    }
 
     private class TankKeyListener extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            myTank.keyPressed(e);
+            int key = e.getKeyCode();
+            if(key == KeyEvent.VK_F1) save();
+            else if(key == KeyEvent.VK_F2) load();
+            else gm.getMyTank().keyPressed(e);
         }
+
+
 
         @Override
         public void keyReleased(KeyEvent e) {
-            myTank.keyRealeased(e);
+            gm.getMyTank().keyRealeased(e);
+        }
+    }
+
+    private void save() {
+        FileOutputStream fos = null;
+        ObjectOutputStream ops = null;
+        try {
+            File f = new File("e:/tank.dat");
+            fos = new FileOutputStream(f);
+            ops = new ObjectOutputStream(fos);
+            ops.writeObject(gm);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(ops != null) ops.close();
+                if(fos != null) fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private void load() {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try{
+            File f = new File("e:/tank.dat");
+             fis = new FileInputStream(f);
+             ois = new ObjectInputStream(fis);
+            this.gm = (GameModel) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(ois != null) ois.close();
+                if(fis != null) fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

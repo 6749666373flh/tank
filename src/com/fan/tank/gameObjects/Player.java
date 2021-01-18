@@ -1,11 +1,12 @@
-package com.fan.tank;
+package com.fan.tank.gameObjects;
 
+import com.fan.tank.*;
 import com.fan.tank.strategy.FireStrategy;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class Player extends AbstractGameObject{
+public class Player extends AbstractGameObject {
 
     public static final int SPEED = 3;
 

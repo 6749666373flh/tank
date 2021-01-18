@@ -1,7 +1,9 @@
 package com.fan.tank.strategy;
 
-import com.fan.tank.Player;
+import com.fan.tank.gameObjects.Player;
 
-public interface FireStrategy {
+import java.io.Serializable;
+
+public interface FireStrategy extends Serializable {
     public void fire(Player p);
 }
