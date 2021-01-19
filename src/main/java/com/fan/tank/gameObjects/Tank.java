@@ -1,8 +1,8 @@
 package com.fan.tank.gameObjects;
 
-import com.fan.tank.Direction;
-import com.fan.tank.Group;
-import com.fan.tank.ResourceMgr;
+import com.fan.tank.util.Direction;
+import com.fan.tank.util.Group;
+import com.fan.tank.util.ResourceMgr;
 import com.fan.tank.TankFrame;
 
 import java.awt.*;

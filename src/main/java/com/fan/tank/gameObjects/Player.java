@@ -2,6 +2,10 @@ package com.fan.tank.gameObjects;
 
 import com.fan.tank.*;
 import com.fan.tank.strategy.FireStrategy;
+import com.fan.tank.util.Direction;
+import com.fan.tank.util.Group;
+import com.fan.tank.util.PropertyMgr;
+import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

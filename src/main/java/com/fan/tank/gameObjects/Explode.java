@@ -1,6 +1,6 @@
 package com.fan.tank.gameObjects;
 
-import com.fan.tank.ResourceMgr;
+import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
 

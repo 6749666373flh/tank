@@ -5,6 +5,9 @@ import com.fan.tank.gameObjects.AbstractGameObject;
 import com.fan.tank.gameObjects.Player;
 import com.fan.tank.gameObjects.Tank;
 import com.fan.tank.gameObjects.Wall;
+import com.fan.tank.util.Direction;
+import com.fan.tank.util.Group;
+import com.fan.tank.util.PropertyMgr;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -30,6 +33,7 @@ public class GameModel implements Serializable {
     private void initGameObjects() {
         myTank = new Player(300, 100, Direction.R, Group.GOOD);
         wall = new Wall(300, 400, 50, 200);
+
         colliderChain = new ColliderChain();
 
         gameObjects = new ArrayList<>();

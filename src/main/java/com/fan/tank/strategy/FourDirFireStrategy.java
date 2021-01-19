@@ -3,6 +3,8 @@ package com.fan.tank.strategy;
 import com.fan.tank.*;
 import com.fan.tank.gameObjects.Bullet;
 import com.fan.tank.gameObjects.Player;
+import com.fan.tank.util.Direction;
+import com.fan.tank.util.ResourceMgr;
 
 public class FourDirFireStrategy implements FireStrategy {
     @Override

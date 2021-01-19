@@ -2,7 +2,7 @@ package com.fan.tank.strategy;
 
 import com.fan.tank.gameObjects.Bullet;
 import com.fan.tank.gameObjects.Player;
-import com.fan.tank.ResourceMgr;
+import com.fan.tank.util.ResourceMgr;
 import com.fan.tank.TankFrame;
 
 public class DefaultFireStrategy implements FireStrategy{

@@ -1,7 +1,7 @@
 package com.fan.tank.chainofresponsibility;
 
 import com.fan.tank.gameObjects.AbstractGameObject;
-import com.fan.tank.PropertyMgr;
+import com.fan.tank.util.PropertyMgr;
 
 import java.util.ArrayList;
 import java.util.List;

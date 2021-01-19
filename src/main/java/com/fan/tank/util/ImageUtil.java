@@ -1,4 +1,4 @@
-package com.fan.tank;
+package com.fan.tank.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

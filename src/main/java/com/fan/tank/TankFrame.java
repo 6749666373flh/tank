@@ -2,8 +2,7 @@ package com.fan.tank;
 
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.*;
 
 
@@ -25,7 +24,12 @@ public class TankFrame extends Frame {
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
 
         this.addKeyListener(new TankKeyListener());
-
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
 
@@ -57,11 +61,10 @@ public class TankFrame extends Frame {
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            if(key == KeyEvent.VK_F1) save();
-            else if(key == KeyEvent.VK_F2) load();
+            if (key == KeyEvent.VK_F1) save();
+            else if (key == KeyEvent.VK_F2) load();
             else gm.getMyTank().keyPressed(e);
         }
-
 
 
         @Override
@@ -81,33 +84,35 @@ public class TankFrame extends Frame {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if(ops != null) ops.close();
-                if(fos != null) fos.close();
+                if (ops != null) ops.close();
+                if (fos != null) fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
     }
+
     private void load() {
         FileInputStream fis = null;
         ObjectInputStream ois = null;
-        try{
+        try {
             File f = new File("e:/tank.dat");
-             fis = new FileInputStream(f);
-             ois = new ObjectInputStream(fis);
+            fis = new FileInputStream(f);
+            ois = new ObjectInputStream(fis);
             this.gm = (GameModel) ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if(ois != null) ois.close();
-                if(fis != null) fis.close();
+                if (ois != null) ois.close();
+                if (fis != null) fis.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }
