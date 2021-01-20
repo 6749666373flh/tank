@@ -1,8 +1,8 @@
-initTankCount = 10
+initTankCount = 1
 
 
 # DefaultFireStrategy FourDirFireStrategy
-tankFireStrategy = FourDirFireStrategy
+tankFireStrategy = DefaultFireStrategy
 
 # colliders
 colliders = BulletWallCollider,BulletTankCollider,TankWallCollider,TankPlayerCollider,PlayerWallCollider,BulletBulletCollider

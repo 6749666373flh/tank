@@ -13,6 +13,8 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class GameModel implements Serializable {
 
@@ -22,6 +24,7 @@ public class GameModel implements Serializable {
     private List<AbstractGameObject> gameObjects;
     private ColliderChain colliderChain;
 
+    private Random r = new Random();
     public GameModel() {
         initGameObjects();
     }
@@ -31,7 +34,7 @@ public class GameModel implements Serializable {
     }
 
     private void initGameObjects() {
-        myTank = new Player(300, 100, Direction.R, Group.GOOD);
+        myTank = new Player(r.nextInt(1000)+50,100, Direction.values()[r.nextInt(4)], Group.values()[r.nextInt(2)]);
         wall = new Wall(300, 400, 50, 200);
 
         colliderChain = new ColliderChain();
@@ -64,5 +67,15 @@ public class GameModel implements Serializable {
             }
             go1.paint(g);
         }
+    }
+
+    public Tank findTankByUUID(UUID id) {
+        for (AbstractGameObject gameObject : gameObjects) {
+            if (gameObject instanceof Tank && ((Tank) gameObject).getId().equals(id)) {
+                return (Tank) gameObject;
+            }
+        }
+
+        return null;
     }
 }

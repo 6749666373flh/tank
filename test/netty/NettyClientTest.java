@@ -15,7 +15,7 @@ class NettyClientTest {
         EmbeddedChannel emChannel = new EmbeddedChannel();
         TankMsg tankMsg = new TankMsg(5, 8);
 
-        emChannel.pipeline().addLast(new TankMsgDecoder()).addLast(new TankMsgEncoder());
+        emChannel.pipeline().addLast(new TankMsgEncoder());
         emChannel.writeOutbound(tankMsg);
         ByteBuf buf = emChannel.readOutbound();
         int i = buf.readInt();
@@ -27,7 +27,8 @@ class NettyClientTest {
     void decode() {
         EmbeddedChannel ec = new EmbeddedChannel();
 
-        ec.pipeline().addLast(new TankMsgDecoder()).addLast(new TankMsgEncoder());
+        ec.pipeline().addLast(new TankMsgDecoder());
+
         ByteBuf buf = Unpooled.buffer();
         buf.writeInt(5);
         buf.writeInt(8);

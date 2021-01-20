@@ -9,6 +9,7 @@ import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.UUID;
 
 public class Player extends AbstractGameObject {
 
@@ -24,6 +25,7 @@ public class Player extends AbstractGameObject {
     private FireStrategy fireStrategy;
     private Rectangle rect;
 
+    private UUID id = UUID.randomUUID();
 
     public Player(int x, int y, Direction direction, Group group) {
         this.x = x;
@@ -42,10 +44,6 @@ public class Player extends AbstractGameObject {
         return rect;
     }
 
-    public void setRect(Rectangle rect) {
-        this.rect = rect;
-    }
-
     public boolean isLive() {
         return live;
     }
@@ -58,49 +56,45 @@ public class Player extends AbstractGameObject {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public Direction getDir() {
         return dir;
     }
 
-    public void setDir(Direction dir) {
-        this.dir = dir;
-    }
-
     public Group getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public void paint(Graphics g) {
-//        g.fillRect(x, y, 30, 30);
         if(!this.live) return;
+
+        Color color = g.getColor();
+        g.setColor(Color.BLUE);
+        g.drawString(id.toString(),x,y-5);
+        g.setColor(color);
         switch (dir) {
             case L:
-                g.drawImage(ResourceMgr.goodTankL, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD) ? ResourceMgr.badTankL : ResourceMgr.goodTankL, x, y, null);
                 break;
             case R:
-                g.drawImage(ResourceMgr.goodTankR, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD) ? ResourceMgr.badTankR : ResourceMgr.goodTankR, x, y, null);
                 break;
             case U:
-                g.drawImage(ResourceMgr.goodTankU, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD) ? ResourceMgr.badTankU : ResourceMgr.goodTankU, x, y, null);
                 break;
             case D:
-                g.drawImage(ResourceMgr.goodTankD, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD) ? ResourceMgr.badTankD : ResourceMgr.goodTankD, x, y, null);
                 break;
         }
 
