@@ -1,10 +1,7 @@
 package com.fan.tank;
 
 import com.fan.tank.chainofresponsibility.ColliderChain;
-import com.fan.tank.gameObjects.AbstractGameObject;
-import com.fan.tank.gameObjects.Player;
-import com.fan.tank.gameObjects.Tank;
-import com.fan.tank.gameObjects.Wall;
+import com.fan.tank.gameObjects.*;
 import com.fan.tank.util.Direction;
 import com.fan.tank.util.Group;
 import com.fan.tank.util.PropertyMgr;
@@ -34,7 +31,7 @@ public class GameModel implements Serializable {
     }
 
     private void initGameObjects() {
-        myTank = new Player(r.nextInt(1000)+50,100, Direction.values()[r.nextInt(4)], Group.values()[r.nextInt(2)]);
+        myTank = new Player(r.nextInt(1000)+50,r.nextInt(500)+50, Direction.values()[r.nextInt(4)], Group.values()[r.nextInt(2)]);
         wall = new Wall(300, 400, 50, 200);
 
         colliderChain = new ColliderChain();
@@ -73,6 +70,16 @@ public class GameModel implements Serializable {
         for (AbstractGameObject gameObject : gameObjects) {
             if (gameObject instanceof Tank && ((Tank) gameObject).getId().equals(id)) {
                 return (Tank) gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    public Bullet findBulletByUUID(UUID bulletId) {
+        for (AbstractGameObject gameObject : gameObjects) {
+            if (gameObject instanceof Bullet && ((Bullet) gameObject).getId().equals(bulletId)) {
+                return (Bullet) gameObject;
             }
         }
 

@@ -1,7 +1,7 @@
 package com.fan.tank.gameObjects;
 
 import com.fan.tank.TankFrame;
-import com.fan.tank.net.TankJoinMsg;
+import com.fan.tank.net.msg.TankJoinMsg;
 import com.fan.tank.util.Direction;
 import com.fan.tank.util.Group;
 import com.fan.tank.util.ResourceMgr;
@@ -44,8 +44,25 @@ public class Tank extends AbstractGameObject {
         this.group = msg.getGroup();
         this.moving = msg.isMoving();
         this.id = msg.getId();
-
+        this.height = ResourceMgr.badTankU.getHeight();
+        this.width = ResourceMgr.badTankU.getWidth();
         this.rect = new Rectangle(x, y, width, height);
+    }
+
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 
     public boolean isLive() {
@@ -132,9 +149,9 @@ public class Tank extends AbstractGameObject {
         }
         boundsCheck();
 
-        randomDir();
+//        randomDir();
         if (r.nextInt(100) > 90) {
-            fire();
+//            fire();
         }
         rect.x = x;
         rect.y = y;
@@ -149,7 +166,7 @@ public class Tank extends AbstractGameObject {
     private void fire() {
         int newX = x + this.width / 2 - ResourceMgr.bulletU.getWidth() / 2;
         int newY = y + this.height / 2 - ResourceMgr.bulletU.getHeight() / 2;
-        TankFrame.INSTANCE.getGm().add(new Bullet(newX, newY, dir, group));
+        TankFrame.INSTANCE.getGm().add(new Bullet(newX, newY, this.dir, this.group,this.id));
 //        System.out.println(new Bullet(newX, newY, dir, group));
     }
 

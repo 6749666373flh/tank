@@ -1,36 +1,42 @@
 package com.fan.tank.net;
 
-import com.fan.tank.util.Direction;
-import com.fan.tank.util.Group;
+import com.fan.tank.net.msg.Msg;
+import com.fan.tank.net.msg.MsgType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.util.List;
-import java.util.UUID;
 
 public class MsgDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> list) throws Exception {
 
-        if(buf.readableBytes() < 37) return;
+        if(buf.readableBytes() < 8) return;
+        buf.markReaderIndex(); // 标记读指针
 
-//        int len = buf.readInt();
-//        int x = buf.readInt();
-//        int y = buf.readInt();
-//        int dir = buf.readInt();
-//        boolean moving = buf.readBoolean();
-//        int group = buf.readInt();
-//        UUID uuid = new UUID(buf.readLong(), buf.readLong());
+        MsgType msgType = MsgType.values()[buf.readInt()];
 
         int len = buf.readInt();
+        if (buf.readableBytes() < len) {
+            buf.resetReaderIndex(); // 长度不够,复位读指针,等消息体完整
+            return;
+        }
+
         byte[] bytes = new byte[len];
         buf.readBytes(bytes);
 
-        TankJoinMsg tankJoinMsg = new TankJoinMsg();
-        tankJoinMsg.parse(bytes);
-        list.add(tankJoinMsg);
+        Msg msg = null;
+        msg = (Msg) Class.forName("com.fan.tank.net.msg." + msgType.toString() + "Msg").getConstructor().newInstance();
+
+        msg.parse(bytes);
+        list.add(msg);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Msg msg = null;
+        msg = (Msg) Class.forName("com.fan.tank.net.msg." + MsgType.TankDie + "Msg").getConstructor().newInstance();
+        System.out.println(msg);
     }
 }

@@ -1,12 +1,14 @@
 package com.fan.tank.net;
 
 import com.fan.tank.TankFrame;
+import com.fan.tank.net.msg.Msg;
+import com.fan.tank.net.msg.TankJoinMsg;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.EventExecutorGroup;
 
 public class Client {
 
@@ -42,11 +44,11 @@ public class Client {
         }
     }
 
-    public void send(TankJoinMsg msg) {
+    public void send(Msg msg) {
         channel.writeAndFlush(msg);
     }
 
-    private class MyClientHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+    private class MyClientHandler extends SimpleChannelInboundHandler<Msg> {
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getGm().getMyTank()));
@@ -54,9 +56,10 @@ public class Client {
 
 
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, TankJoinMsg tankJoinMsg) throws Exception {
-            System.out.println(tankJoinMsg);
-            tankJoinMsg.handle();
+        protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+            System.out.println(msg);
+            msg.handle();
+
         }
 
         @Override

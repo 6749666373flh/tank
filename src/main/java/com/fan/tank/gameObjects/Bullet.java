@@ -6,8 +6,12 @@ import com.fan.tank.util.Group;
 import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
+import java.util.UUID;
 
 public class Bullet extends AbstractGameObject {
+
+    private UUID id = UUID.randomUUID();
+    private UUID playerId;
 
     private int x, y, w, h;
     private Direction dir;
@@ -17,15 +21,28 @@ public class Bullet extends AbstractGameObject {
     private Rectangle rectTank;
     public static final int SPEED = 6;
 
-    public Bullet(int x, int y, Direction dir, Group group) {
+    public Bullet(int x, int y, Direction dir, Group group, UUID playerId) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+        this.playerId = playerId;
         this.w = ResourceMgr.bulletU.getWidth();
         this.h = ResourceMgr.bulletU.getHeight();
         rect = new Rectangle(x, y, w, h);
         rectTank = new Rectangle(0,0,ResourceMgr.goodTankU.getWidth(), ResourceMgr.goodTankU.getHeight());
+
+    }
+    public UUID getId() {
+        return this.id;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public boolean isLive() {
@@ -46,6 +63,30 @@ public class Bullet extends AbstractGameObject {
 
     public int getH() {
         return h;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
     }
 
     public void paint(Graphics g) {
@@ -117,4 +158,6 @@ public class Bullet extends AbstractGameObject {
                 ", rectTank=" + rectTank +
                 '}';
     }
+
+
 }

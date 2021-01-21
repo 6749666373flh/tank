@@ -1,4 +1,4 @@
-initTankCount = 1
+initTankCount = 0
 
 
 # DefaultFireStrategy FourDirFireStrategy

@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.sctp.nio.NioSctpServerChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.EventExecutor;
@@ -62,8 +63,5 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.serverStart();
-    }
+
 }

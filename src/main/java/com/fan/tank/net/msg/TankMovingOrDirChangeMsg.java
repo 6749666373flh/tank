@@ -1,33 +1,31 @@
-package com.fan.tank.net;
+package com.fan.tank.net.msg;
 
 import com.fan.tank.TankFrame;
-import com.fan.tank.gameObjects.Player;
 import com.fan.tank.gameObjects.Tank;
 import com.fan.tank.util.Direction;
-import com.fan.tank.util.Group;
 
 import java.io.*;
 import java.util.UUID;
 
-public class TankJoinMsg {
-
-    private int x,y;
-    private Direction dir;
-    private boolean moving;
-    private Group group;
+public class TankMovingOrDirChangeMsg extends Msg{
 
     private UUID id;
+    private int x,y;
+    private Direction dir;
 
-    public TankJoinMsg() {
+
+    public TankMovingOrDirChangeMsg() {
     }
 
-    public TankJoinMsg(Player player) {
-        this.x = player.getX();
-        this.y = player.getY();
-        this.dir = player.getDir();
-        this.moving = player.isMoving();
-        this.group = player.getGroup();
-        this.id = player.getId();
+    public TankMovingOrDirChangeMsg(UUID id, int x, int y, Direction dir) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public int getX() {
@@ -42,43 +40,20 @@ public class TankJoinMsg {
         return dir;
     }
 
-    public boolean isMoving() {
-        return moving;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
     @Override
-    public String toString() {
-        return "TankJoinMsg{" +
-                "x=" + x +
-                ", y=" + y +
-                ", dir=" + dir +
-                ", moving=" + moving +
-                ", group=" + group +
-                ", id=" + id +
-                '}';
-    }
-
     public byte[] toBytes() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
         byte[] bytes = null;
         try {
-            dos.writeInt(x);
-            dos.writeInt(y);
-            dos.writeInt(dir.ordinal());
-            dos.writeBoolean(moving);
-            dos.writeInt(group.ordinal());
             dos.writeLong(id.getMostSignificantBits());
             dos.writeLong(id.getLeastSignificantBits());
+
+            dos.writeInt(x);
+            dos.writeInt(y);
+
+            dos.writeInt(dir.ordinal());
             dos.flush();
             bytes = baos.toByteArray();
         } catch (IOException e) {
@@ -95,16 +70,15 @@ public class TankJoinMsg {
         return bytes;
     }
 
+    @Override
     public void parse(byte[] bytes) {
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
 
         try {
+            this.id = new UUID(dis.readLong(), dis.readLong());
             this.x = dis.readInt();
             this.y = dis.readInt();
             this.dir = Direction.values()[dis.readInt()];
-            this.moving = dis.readBoolean();
-            this.group = Group.values()[dis.readInt()];
-            this.id = new UUID(dis.readLong(), dis.readLong());
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
@@ -116,13 +90,31 @@ public class TankJoinMsg {
         }
     }
 
+    @Override
     public void handle() {
         if(this.id.equals(TankFrame.INSTANCE.getGm().getMyTank().getId())) return;
-        if(TankFrame.INSTANCE.getGm().findTankByUUID(this.id) != null) return;
 
-        Tank tank = new Tank(this);
-        TankFrame.INSTANCE.getGm().add(tank);
+        Tank t = TankFrame.INSTANCE.getGm().findTankByUUID(this.id);
+        if (t != null) {
+            t.setMoving(true);
+            t.setX(this.x);
+            t.setY(this.y);
+            t.setDir(this.dir);
+        }
+    }
 
-        Client.INSTANCE.send(new TankJoinMsg(TankFrame.INSTANCE.getGm().getMyTank()));
+    @Override
+    public MsgType getMsgType() {
+        return MsgType.TankMovingOrDirChange;
+    }
+
+    @Override
+    public String toString() {
+        return "TankStartMovingMsg{" +
+                "id=" + id +
+                ", x=" + x +
+                ", y=" + y +
+                ", dir=" + dir +
+                '}';
     }
 }

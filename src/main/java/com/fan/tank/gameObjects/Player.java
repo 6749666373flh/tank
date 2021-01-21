@@ -1,6 +1,10 @@
 package com.fan.tank.gameObjects;
 
-import com.fan.tank.*;
+import com.fan.tank.TankFrame;
+import com.fan.tank.net.*;
+import com.fan.tank.net.msg.TankJoinMsg;
+import com.fan.tank.net.msg.TankMovingOrDirChangeMsg;
+import com.fan.tank.net.msg.TankStopMsg;
 import com.fan.tank.strategy.FireStrategy;
 import com.fan.tank.util.Direction;
 import com.fan.tank.util.Group;
@@ -15,8 +19,8 @@ public class Player extends AbstractGameObject {
 
     public static final int SPEED = 3;
 
-    private int x, y,width,height;
-    private int oldX,oldY;
+    private int x, y, width, height;
+    private int oldX, oldY;
     private Direction dir;
     private boolean bL, bU, bR, bD;
     private boolean moving = false;
@@ -37,6 +41,19 @@ public class Player extends AbstractGameObject {
         this.oldX = x;
         this.oldY = y;
         rect = new Rectangle(x, y, width, height);
+        this.initFireStrategy();
+    }
+
+    public Player(TankJoinMsg msg) {
+        this.x = msg.getX();
+        this.y = msg.getY();
+        this.dir = msg.getDir();
+        this.group = msg.getGroup();
+        this.moving = msg.isMoving();
+        this.id = msg.getId();
+        this.width = ResourceMgr.goodTankU.getWidth();
+        this.height = ResourceMgr.goodTankU.getHeight();
+        this.rect = new Rectangle(x, y, width, height);
         this.initFireStrategy();
     }
 
@@ -77,11 +94,11 @@ public class Player extends AbstractGameObject {
     }
 
     public void paint(Graphics g) {
-        if(!this.live) return;
+        if (!this.live) return;
 
         Color color = g.getColor();
         g.setColor(Color.BLUE);
-        g.drawString(id.toString(),x,y-5);
+        g.drawString(id.toString(), x, y - 5);
         g.setColor(color);
         switch (dir) {
             case L:
@@ -122,9 +139,13 @@ public class Player extends AbstractGameObject {
 
     private void setMainDir() {
 
-        if (!bL && !bU && !bR && !bD)
+        boolean oldMoving = moving;
+        Direction oldDir = dir;
+
+        if (!bL && !bU && !bR && !bD) {
             moving = false;
-        else {
+            Client.INSTANCE.send(new TankStopMsg(this.id, this.x, this.y));
+        } else {
             moving = true;
             if (bL && !bU && !bR && !bD)
                 dir = Direction.L;
@@ -134,8 +155,10 @@ public class Player extends AbstractGameObject {
                 dir = Direction.R;
             if (!bL && !bU && !bR && bD)
                 dir = Direction.D;
+//            Client.INSTANCE.send(new TankStartMovingMsg(this.id,this.x,this.y,this.dir));
+            if (!oldMoving) Client.INSTANCE.send(new TankMovingOrDirChangeMsg(this.id, this.x, this.y, this.dir));
+            if (!oldDir.equals(dir)) Client.INSTANCE.send(new TankMovingOrDirChangeMsg(this.id, this.x, this.y, this.dir));
         }
-
 
     }
 
@@ -158,6 +181,7 @@ public class Player extends AbstractGameObject {
                 break;
         }
         boundsCheck();
+//        Client.INSTANCE.send(new TankStartMovingMsg(this.id,this.x,this.y,this.dir));
         rect.x = x;
         rect.y = y;
     }
@@ -178,11 +202,12 @@ public class Player extends AbstractGameObject {
                 bD = false;
                 break;
             case KeyEvent.VK_CONTROL:
-                fire();
+                if(live) fire();
                 break;
         }
         setMainDir();
     }
+
     private void initFireStrategy() {
 
         String className = PropertyMgr.get("tankFireStrategy");
@@ -193,12 +218,13 @@ public class Player extends AbstractGameObject {
             e.printStackTrace();
         }
     }
+
     private void fire() {
         fireStrategy.fire(this);
     }
 
     private void boundsCheck() {
-        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH-width || y > TankFrame.GAME_HEIGHT-height) {
+        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH - width || y > TankFrame.GAME_HEIGHT - height) {
             back();
         }
 
@@ -208,8 +234,10 @@ public class Player extends AbstractGameObject {
         this.x = oldX;
         this.y = oldY;
     }
+
     public void die() {
         this.setLive(false);
+        TankFrame.INSTANCE.getGm().add(new Explode(x, y));
     }
 
 }
