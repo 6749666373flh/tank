@@ -23,20 +23,21 @@ public class Client {
         Bootstrap boot = new Bootstrap();
         try {
             boot.group(workerGroup)
-                    .handler(new ChannelInitializer<SocketChannel>() {
+                    .channel(NioDatagramChannel.class)
+                    .handler(new ChannelInitializer<NioDatagramChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline()
+                        protected void initChannel(NioDatagramChannel NioChannel) throws Exception {
+                            NioChannel.pipeline()
                                     .addLast(new MsgEncoder())
                                     .addLast(new MsgDecoder())
                                     .addLast(new MyClientHandler());
-                            channel = socketChannel;
                         }
-                    })
-                    .channel(NioSocketChannel.class);
+                    });
 
-            ChannelFuture future = boot.connect("localhost", 8888).sync();
-            future.channel().closeFuture().sync();
+            channel= boot.bind(0).sync().channel();
+//            channel.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getGm().getMyTank()));
+
+            channel.closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
