@@ -7,6 +7,7 @@ import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Bullet extends AbstractGameObject {
 
@@ -136,6 +137,7 @@ public class Bullet extends AbstractGameObject {
 
     public void die() {
         this.setLive(false);
+
     }
 
     private void boundsCheck() {

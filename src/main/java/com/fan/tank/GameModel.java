@@ -54,7 +54,15 @@ public class GameModel implements Serializable {
         g.setColor(Color.WHITE);
         g.setColor(c);
 
-        gameObjects.removeIf(gameObject -> !gameObject.isLive());
+        for (int i = 0; i < gameObjects.size(); i++) {
+            AbstractGameObject gameObject = gameObjects.get(i);
+            if(gameObject instanceof Bullet && !gameObject.isLive()){
+                TankFrame.INSTANCE.getGm().getMyTank().getBlockingQueue().remove(gameObject);
+            }
+            if(!gameObject.isLive()){
+                gameObjects.remove(gameObject);
+            }
+        }
 
         for (int i = 0; i < gameObjects.size(); i++) {
             AbstractGameObject go1 = gameObjects.get(i);

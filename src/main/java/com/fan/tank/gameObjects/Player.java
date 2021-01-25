@@ -14,6 +14,7 @@ import com.fan.tank.util.ResourceMgr;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Player extends AbstractGameObject {
 
@@ -30,6 +31,8 @@ public class Player extends AbstractGameObject {
     private Rectangle rect;
 
     private UUID id = UUID.randomUUID();
+
+    private ArrayBlockingQueue<Bullet> blockingQueue = new ArrayBlockingQueue<>(4);
 
     public Player(int x, int y, Direction direction, Group group) {
         this.x = x;
@@ -55,6 +58,10 @@ public class Player extends AbstractGameObject {
         this.height = ResourceMgr.goodTankU.getHeight();
         this.rect = new Rectangle(x, y, width, height);
         this.initFireStrategy();
+    }
+
+    public ArrayBlockingQueue<Bullet> getBlockingQueue() {
+        return blockingQueue;
     }
 
     public Rectangle getRect() {
