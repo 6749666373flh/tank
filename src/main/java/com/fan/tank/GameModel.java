@@ -59,6 +59,9 @@ public class GameModel implements Serializable {
             if(gameObject instanceof Bullet && !gameObject.isLive()){
                 TankFrame.INSTANCE.getGm().getMyTank().getBlockingQueue().remove(gameObject);
             }
+            if(gameObject instanceof Ammo && !gameObject.isLive()){
+                TankFrame.INSTANCE.getGm().getMyTank().getAmmoBlockingQueue().remove(gameObject);
+            }
             if(!gameObject.isLive()){
                 gameObjects.remove(gameObject);
             }
@@ -72,6 +75,9 @@ public class GameModel implements Serializable {
             }
             go1.paint(g);
         }
+
+
+
     }
 
     public Tank findTankByUUID(UUID id) {
@@ -88,6 +94,16 @@ public class GameModel implements Serializable {
         for (AbstractGameObject gameObject : gameObjects) {
             if (gameObject instanceof Bullet && ((Bullet) gameObject).getId().equals(bulletId)) {
                 return (Bullet) gameObject;
+            }
+        }
+
+        return null;
+    }
+
+    public Ammo findAmmoByUUID(UUID AmmoId) {
+        for (AbstractGameObject gameObject : gameObjects) {
+            if (gameObject instanceof Ammo && ((Ammo) gameObject).getId().equals(AmmoId)) {
+                return (Ammo) gameObject;
             }
         }
 

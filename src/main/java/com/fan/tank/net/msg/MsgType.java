@@ -6,5 +6,5 @@ package com.fan.tank.net.msg;
 * @date: 2021/1/20 18:20
 */
 public enum MsgType {
-    TankJoin, TankMovingOrDirChange, TankStop, BulletNew, TankDie, BulletDie
+    TankJoin, TankMovingOrDirChange, TankStop, BulletNew, TankDie, BulletDie, AmmoNew, AmmoDie
 }

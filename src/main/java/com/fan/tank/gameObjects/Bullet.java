@@ -91,6 +91,7 @@ public class Bullet extends AbstractGameObject {
     }
 
     public void paint(Graphics g) {
+
         switch (dir) {
             case L:
                 g.drawImage(ResourceMgr.bulletL, x, y, null);

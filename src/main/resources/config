@@ -5,4 +5,7 @@ initTankCount = 0
 tankFireStrategy = DefaultFireStrategy
 
 # colliders
-colliders = BulletWallCollider,BulletTankCollider,TankWallCollider,TankPlayerCollider,PlayerWallCollider,BulletBulletCollider
+colliders = BulletWallCollider,BulletTankCollider,TankWallCollider,TankPlayerCollider,PlayerWallCollider,BulletBulletCollider,PlayerAmmoCollider
+
+# 设置弹药箱子弹数
+bulletNum = 10

@@ -1,10 +1,14 @@
 package com.fan.tank.gameObjects;
 
+import com.fan.tank.GameModel;
 import com.fan.tank.TankFrame;
 import com.fan.tank.net.*;
 import com.fan.tank.net.msg.TankJoinMsg;
 import com.fan.tank.net.msg.TankMovingOrDirChangeMsg;
 import com.fan.tank.net.msg.TankStopMsg;
+import com.fan.tank.observer.TankFireEvent;
+import com.fan.tank.observer.TankFireHandler;
+import com.fan.tank.observer.TankFireObserver;
 import com.fan.tank.strategy.FireStrategy;
 import com.fan.tank.util.Direction;
 import com.fan.tank.util.Group;
@@ -13,6 +17,8 @@ import com.fan.tank.util.ResourceMgr;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -29,10 +35,21 @@ public class Player extends AbstractGameObject {
     private Group group;
     private FireStrategy fireStrategy;
     private Rectangle rect;
+    private int bulletNum;  // 初始弹夹容量
 
     private UUID id = UUID.randomUUID();
 
-    private ArrayBlockingQueue<Bullet> blockingQueue = new ArrayBlockingQueue<>(4);
+    private ArrayBlockingQueue<Bullet> blockingQueue = new ArrayBlockingQueue<>(4); // 每次最多发射4发子弹,等待子弹消失才可再次发射
+    private ArrayBlockingQueue<Ammo> ammoBlockingQueue = new ArrayBlockingQueue<>(4); // 召唤弹药箱,场地上最多4个弹药箱
+
+    private ArrayList<TankFireObserver> fireObserverList = new ArrayList<>(); // 加入观察者模式
+
+    public void handleFireKey() {
+        TankFireEvent tankFireEvent = new TankFireEvent(this);
+        for (TankFireObserver tankFireObserver : fireObserverList) {
+            tankFireObserver.actionOn(tankFireEvent);
+        }
+    }
 
     public Player(int x, int y, Direction direction, Group group) {
         this.x = x;
@@ -44,6 +61,8 @@ public class Player extends AbstractGameObject {
         this.oldX = x;
         this.oldY = y;
         rect = new Rectangle(x, y, width, height);
+        this.bulletNum = 20;
+        fireObserverList.add(new TankFireHandler());
         this.initFireStrategy();
     }
 
@@ -58,6 +77,18 @@ public class Player extends AbstractGameObject {
         this.height = ResourceMgr.goodTankU.getHeight();
         this.rect = new Rectangle(x, y, width, height);
         this.initFireStrategy();
+    }
+
+    public int getBulletNum() {
+        return bulletNum;
+    }
+
+    public void setBulletNum(int bulletNum) {
+        this.bulletNum = bulletNum;
+    }
+
+    public ArrayBlockingQueue<Ammo> getAmmoBlockingQueue() {
+        return ammoBlockingQueue;
     }
 
     public ArrayBlockingQueue<Bullet> getBlockingQueue() {
@@ -209,7 +240,10 @@ public class Player extends AbstractGameObject {
                 bD = false;
                 break;
             case KeyEvent.VK_CONTROL:
-                if(live) fire();
+                if(live) {
+//                    fire();
+                handleFireKey();
+                }
                 break;
         }
         setMainDir();
@@ -226,8 +260,10 @@ public class Player extends AbstractGameObject {
         }
     }
 
-    private void fire() {
+    public void fire() {
+        bulletNum--;
         fireStrategy.fire(this);
+
     }
 
     private void boundsCheck() {
