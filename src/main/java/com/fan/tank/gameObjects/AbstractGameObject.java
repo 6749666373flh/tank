@@ -4,7 +4,11 @@ import java.awt.*;
 import java.io.Serializable;
 
 public abstract class AbstractGameObject implements Serializable {
-    public abstract void paint(Graphics g);
+    public void paint(Graphics g){
+        throw new UnsupportedOperationException();
+    }
 
-    public abstract boolean isLive();
+    public boolean isLive(){
+        throw new UnsupportedOperationException();
+    }
 }
