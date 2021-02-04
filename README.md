@@ -13,3 +13,4 @@
 - 责任链(Chain of Responsibility)
 - 策略(Strategy)
 - 外观(Facade)
+- 模板(Template)
